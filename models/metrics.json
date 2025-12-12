@@ -1,0 +1,82 @@
+{
+    "MultinomialNB": {
+        "accuracy": 0.8768,
+        "f1": 0.8786254728877679,
+        "precision": 0.8657968313140727,
+        "recall": 0.89184,
+        "confusion_matrix": [
+            [
+                5386,
+                864
+            ],
+            [
+                676,
+                5574
+            ]
+        ]
+    },
+    "LogisticRegression": {
+        "accuracy": 0.90152,
+        "f1": 0.9025876394713935,
+        "precision": 0.8929074682949741,
+        "recall": 0.91248,
+        "confusion_matrix": [
+            [
+                5566,
+                684
+            ],
+            [
+                547,
+                5703
+            ]
+        ]
+    },
+    "LinearSVC": {
+        "accuracy": 0.8996,
+        "f1": 0.9002305429684395,
+        "precision": 0.8946121030178543,
+        "recall": 0.90592,
+        "confusion_matrix": [
+            [
+                5583,
+                667
+            ],
+            [
+                588,
+                5662
+            ]
+        ]
+    },
+    "RandomForest": {
+        "accuracy": 0.86576,
+        "f1": 0.8660600255427842,
+        "precision": 0.8641287034087289,
+        "recall": 0.868,
+        "confusion_matrix": [
+            [
+                5397,
+                853
+            ],
+            [
+                825,
+                5425
+            ]
+        ]
+    },
+    "best_model": {
+        "accuracy": 0.90152,
+        "f1": 0.9025876394713935,
+        "precision": 0.8929074682949741,
+        "recall": 0.91248,
+        "confusion_matrix": [
+            [
+                5566,
+                684
+            ],
+            [
+                547,
+                5703
+            ]
+        ]
+    }
+}
