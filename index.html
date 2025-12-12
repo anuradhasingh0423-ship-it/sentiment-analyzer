@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sentiment Analyzer</title>
+
+  <style>
+    /* ---------- GLOBAL PAGE STYLE ---------- */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #020617, #0f172a, #1e293b);
+      color: #e2e8f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ---------- MAIN CARD (GLASSMORPHISM) ---------- */
+    .container {
+      width: 520px;
+      padding: 35px;
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      animation: floatUp 0.8s ease-in-out;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- TITLE ---------- */
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ---------- TEXTAREA ---------- */
+    textarea {
+      width: 100%;
+      height: 130px;
+      padding: 14px;
+      font-size: 15px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #f8fafc;
+      resize: none;
+      outline: none;
+      transition: 0.25s;
+    }
+
+    textarea:focus {
+      border-color: #818cf8;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* ---------- BUTTON ---------- */
+    button {
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      font-size: 17px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+    }
+
+    button:hover {
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #4f46e5, #4338ca);
+    }
+
+    /* ---------- SENTIMENT RESULT BOX ---------- */
+    .result {
+      margin-top: 22px;
+      padding: 16px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .positive { background: rgba(16, 185, 129, 0.25); color: #6ee7b7; border: 1px solid #10b981; }
+    .negative { background: rgba(239, 68, 68, 0.25); color: #fecaca; border: 1px solid #ef4444; }
+
+    /* ---------- CONFIDENCE BAR ---------- */
+    .conf-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 8px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .conf-fill {
+      height: 100%;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #4ade80, #22c55e);
+      transition: width 0.6s ease;
+    }
+
+    /* ---------- EXPLANATION BOX ---------- */
+    .explain-box {
+      margin-top: 18px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    ul { padding-left: 20px; }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Sentiment Analyzer</h2>
+
+    <form method="POST">
+      <textarea name="review" placeholder="Type your review here...">{{ input_text }}</textarea>
+      <button type="submit">Analyze</button>
+    </form>
+
+    {% if prediction %}
+      <div class="result {% if prediction == 'Positive' %}positive{% else %}negative{% endif %}">
+        {% if prediction == 'Positive' %} 😊 {% else %} 😞 {% endif %}
+        Sentiment: {{ prediction }}
+      </div>
+
+      {% if confidence is not none %}
+        <div style="text-align:center; margin-top:10px;">
+          Confidence: <strong>{{ (confidence * 100) | round(2) }}%</strong>
+        </div>
+
+        <!-- Animated Confidence Bar -->
+        <div class="conf-bar">
+          <div class="conf-fill" style="width: {{ (confidence * 100) }}%;"></div>
+        </div>
+      {% endif %}
+
+      {% if explanation %}
+        <div class="explain-box">
+          <strong>Top words contributing to prediction</strong>
+          <ul>
+            {% for word, weight in explanation %}
+              <li>{{ word }} — {{ "%.3f"|format(weight) }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+</html>

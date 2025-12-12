@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Comparison Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .box {
+      width: 900px;
+      background: rgba(255,255,255,0.06);
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      text-align: center;
+      background: linear-gradient(90deg, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    canvas {
+      margin-top: 25px;
+      background: rgba(255,255,255,0.05);
+      padding: 15px;
+      border-radius: 12px;
+    }
+
+    h3 {
+      margin-top: 30px;
+      color: #a5b4fc;
+      text-align: center;
+    }
+
+    .cm-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .cm-box {
+      margin: 12px;
+      padding: 15px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      width: 250px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    td {
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="box">
+    <h2>📊 Model Performance Dashboard</h2>
+
+    <!-- CHARTS -->
+    <canvas id="accuracyChart"></canvas>
+    <canvas id="f1Chart"></canvas>
+    <canvas id="precisionChart"></canvas>
+    <canvas id="recallChart"></canvas>
+
+    <!-- CONFUSION MATRICES -->
+    <h3>Confusion Matrices</h3>
+    <div class="cm-grid">
+      {% for name, m in metrics.items() %}
+      <div class="cm-box">
+        <h4>{{ name }}</h4>
+        <table>
+          <tr><td>{{ m.confusion_matrix[0][0] }}</td><td>{{ m.confusion_matrix[0][1] }}</td></tr>
+          <tr><td>{{ m.confusion_matrix[1][0] }}</td><td>{{ m.confusion_matrix[1][1] }}</td></tr>
+        </table>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    const models = {{ metrics | tojson }};
+
+    // Extract lists
+    const modelNames = Object.keys(models);
+    const accuracy = modelNames.map(m => models[m].accuracy * 100);
+    const f1 = modelNames.map(m => models[m].f1);
+    const precision = modelNames.map(m => models[m].precision);
+    const recall = modelNames.map(m => models[m].recall);
+
+    // Chart helper
+    function createChart(canvasId, label, data, color) {
+      new Chart(document.getElementById(canvasId), {
+        type: 'bar',
+        data: {
+          labels: modelNames,
+          datasets: [{
+            label: label,
+            data: data,
+            backgroundColor: color,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    createChart("accuracyChart", "Accuracy (%)", accuracy, "rgba(96,165,250,0.7)");
+    createChart("f1Chart", "F1 Score", f1, "rgba(167,139,250,0.7)");
+    createChart("precisionChart", "Precision", precision, "rgba(52,211,153,0.7)");
+    createChart("recallChart", "Recall", recall, "rgba(248,113,113,0.7)");
+  </script>
+
+</body>
+</html>
